@@ -40,6 +40,6 @@ void displayMessage(const char* line1, const char* line2 = "");
 // High score API (Classic)
 int loadHighScoreClassicLevel(int level);
 void saveHighScoreClassicLevel(int level, int value);
-void displayHUDClassic(int lives, int scoreVal, int level);
+void displayHUDClassic(int lives, int scoreVal, int level, int mult, int hits);
 
 #endif

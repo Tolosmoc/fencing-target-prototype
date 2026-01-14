@@ -2,14 +2,16 @@
 
 static int currentLed = -1;
 static unsigned long startTime = 0;
-static unsigned long timeLimit = 2000;   // tu peux le rendre dynamique si tu veux
+static unsigned long timeLimit = 2000;
 static int lives = 3;
+static int hits = 0;
+static int mult = 1;
+static const int HITS_PER_MULT = 15;
 static bool started = false;
 int classicLevel = 2;
 
 static unsigned long levelToTimeLimitMs(int level) {
-  // 1..5 => 2500, 2000, 1500, 1000, 500
-  const unsigned long table[5] = {2500, 2000, 1500, 1000, 500};
+  const unsigned long table[5] = {2500, 2000, 1500, 1000, 500}; // lvl 1 to 5
   if (level < 1) level = 1;
   if (level > 5) level = 5;
   return table[level - 1];
@@ -22,7 +24,6 @@ static void allLedsOff() {
 static void startRound() {
   allLedsOff();
 
-  // petite pause aléatoire entre deux LEDs (comme tu voulais)
   int base = 200 + (5 - classicLevel) * 60;
   delay(random(base, base + 300));
 
@@ -30,24 +31,24 @@ static void startRound() {
   digitalWrite(ledPins[currentLed], HIGH);
   startTime = millis();
 
-  displayHUDClassic(lives, score, classicLevel);
+  displayHUDClassic(lives, score, classicLevel, mult, hits);
 }
 
 static void loseLifeQuick() {
   lives--;
+  mult = 1;
+  hits = 0;
   allLedsOff();
 
-  // Flash rapide = feedback immédiat
-  for (int k = 0; k < 2; k++) {
+  for (int k = 0; k < 1; k++) {
     for (int i = 0; i < 5; i++) digitalWrite(ledPins[i], HIGH);
-    delay(90);
+    delay(100);
     for (int i = 0; i < 5; i++) digitalWrite(ledPins[i], LOW);
-    delay(90);
+    delay(100);
   }
 
   if (lives > 0) {
-    // Pas d’écran "Wrong" long : on réaffiche HUD et on repart
-    displayHUDClassic(lives, score, classicLevel);
+    displayHUDClassic(lives, score, classicLevel, mult, hits);
     startRound();
   } else {
     int hsBefore = loadHighScoreClassicLevel(classicLevel);
@@ -96,7 +97,6 @@ void classicLoop() {
     return;
   }
 
-  // Timeout => perte de vie
   if (millis() - startTime > timeLimit) {
     loseLifeQuick();
     return;
@@ -105,19 +105,21 @@ void classicLoop() {
   int b = readButton();
   if (b == -1) return;
 
-  // on éteint la LED active dès qu'il y a un input
   digitalWrite(ledPins[currentLed], LOW);
 
-  // Mauvais bouton => perte de vie
   if (b != currentLed) {
     loseLifeQuick();
     return;
   }
 
-  // Bon bouton => +1 score, round suivant
-  score++;
-  displayHUDClassic(lives, score, classicLevel);
+ hits++;
+  score += mult;
 
-  // round suivant
+  if (hits % HITS_PER_MULT == 0) {
+    mult++;
+  }
+
+  displayHUDClassic(lives, score, classicLevel, mult, hits);
+
   startRound();
 }

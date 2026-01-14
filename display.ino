@@ -53,23 +53,38 @@ void displayMenu() {
   }
 }
 
-void displayHUDClassic(int lives, int scoreVal, int level) {
-  lcd.setCursor(0, 0);
-  lcd.print("L");
-  lcd.print(level);
-  lcd.print(" ");
+void displayHUDClassic(int lives, int scoreVal, int level, int mult, int hits) {
+  char line0[17];
+  char line1[17];
 
-  // 3 coeurs (plein si encore en vie, sinon espace)
+  const int HITS_PER_MULT = 15;
+  int prog = hits % HITS_PER_MULT;
+
+  for (int i = 0; i < 16; i++) line0[i] = ' ';
+  line0[16] = '\0';
+
+  line0[0] = 'l'; line0[1] = 'v'; line0[2] = 'l'; line0[3] = ':';
+  line0[4] = char('0' + level);
+  line0[5] = ' ';
+
+  snprintf(&line0[10], 7, "%02d/15", prog);
+
+  snprintf(line1, sizeof(line1), "Score:%-6d x%-2d", scoreVal, mult);
+  int len = strlen(line1);
+  for (int i = len; i < 16; i++) line1[i] = ' ';
+  line1[16] = '\0';
+
+  lcd.setCursor(0, 0);
+  lcd.print(line0);
+
+  lcd.setCursor(6, 0);
   for (int i = 0; i < 3; i++) {
-    if (i < lives) lcd.write(byte(0)); // coeur
-    else lcd.print(" ");
+    if (i < lives) lcd.write(byte(0));
+    else lcd.print(' ');
   }
 
-  // Compléter la ligne si restes de caractères (évite artefacts)
-  lcd.print("        "); 
-
   lcd.setCursor(0, 1);
-  lcd.print("Score: ");
-  lcd.print(scoreVal);
-  lcd.print("        ");
+  lcd.print(line1);
 }
+
+
