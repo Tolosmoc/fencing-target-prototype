@@ -19,6 +19,7 @@ const int LCD_D7 = A3;
 // Game states
 enum GameState {
   STATE_MENU,
+  STATE_CLASSIC_SETUP,
   STATE_CLASSIC,
   STATE_TIMER,
   STATE_MEMORY,
@@ -28,11 +29,17 @@ enum GameState {
 extern GameState state;
 extern int score;
 extern int selectedMode;
+extern int classicLevel;
 
 // Display API
 void displayInit();
 void displayMenu();
 void displayScore();
 void displayMessage(const char* line1, const char* line2 = "");
+
+// High score API (Classic)
+int loadHighScoreClassicLevel(int level);
+void saveHighScoreClassicLevel(int level, int value);
+void displayHUDClassic(int lives, int scoreVal, int level);
 
 #endif
