@@ -31,6 +31,7 @@ void loop() {
     case STATE_MENU:          menuLoop(); break;
     case STATE_CLASSIC_SETUP: classicSetupLoop(); break;
     case STATE_CLASSIC:       classicLoop(); break;
+    case STATE_TIMER_SETUP:   timerSetupLoop(); break;
     case STATE_TIMER:         timerLoop(); break;
     case STATE_MEMORY:        memoryLoop(); break;
     case STATE_SPEEDRUN:      speedrunLoop(); break;

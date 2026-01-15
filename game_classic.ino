@@ -17,10 +17,6 @@ static unsigned long levelToTimeLimitMs(int level) {
   return table[level - 1];
 }
 
-static void allLedsOff() {
-  for (int i = 0; i < 5; i++) digitalWrite(ledPins[i], LOW);
-}
-
 static void startRound() {
   allLedsOff();
 

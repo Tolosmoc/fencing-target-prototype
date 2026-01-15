@@ -21,6 +21,7 @@ enum GameState {
   STATE_MENU,
   STATE_CLASSIC_SETUP,
   STATE_CLASSIC,
+  STATE_TIMER_SETUP,
   STATE_TIMER,
   STATE_MEMORY,
   STATE_SPEEDRUN
@@ -30,6 +31,7 @@ extern GameState state;
 extern int score;
 extern int selectedMode;
 extern int classicLevel;
+extern int timerLevel;
 
 // Display API
 void displayInit();
@@ -41,5 +43,17 @@ void displayMessage(const char* line1, const char* line2 = "");
 int loadHighScoreClassicLevel(int level);
 void saveHighScoreClassicLevel(int level, int value);
 void displayHUDClassic(int lives, int scoreVal, int level, int mult, int hits);
+
+void allLedsOff();
+uint32_t timerLevelToDurationMs(int lvl);
+
+void timerSetupLoop();
+void timerLoop();
+
+void showTimerSetupScreen(uint8_t lvl, uint32_t durationMs);
+void showTimerHUD(uint16_t scoreVal, uint32_t remainingMs, uint8_t lvl, uint8_t mult, uint8_t hitInCycle, uint8_t hitsPerMult);
+
+int loadHighScoreTimerLevel(int level);
+void saveHighScoreTimerLevel(int level, int value);
 
 #endif
